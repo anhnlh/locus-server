@@ -46,20 +46,20 @@ app.get("/getAllLocations", async (_, res) => {
 
 app.post("/upsertLocation", async (req, res) => {
   try {
-    const { timestamp, updatedLocation } = req.body;
+    const { timestamp, location } = req.body;
     const result = await collection.updateOne(
       { timestamp: timestamp },
-      { $set: updatedLocation },
+      { $set: location },
       { upsert: true }
     );
     if (result.matchedCount === 0) {
       if (result.ok) {
-        res.status(201).send("Location created successfully");
+        res.status(201).send(result);
       } else {
         res.status(404).send("Location not found");
       }
     } else {
-      res.status(200).send("Location updated successfully");
+      res.status(200).send(result);
     }
   } catch (error) {
     console.error(error);
